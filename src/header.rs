@@ -140,7 +140,7 @@ pub enum CommonHeader {
 
 impl CommonHeader {
     /// Converts the enum variant into a byte array of the header name with a newline (`\n`) at the end.
-    pub fn to_bytes(&self, body: &[u8]) -> Vec<u8> {
+    pub fn as_bytes(&self, body: &[u8]) -> Vec<u8> {
         let header_name = match self {
             CommonHeader::WwwAuthenticate => "WWW-Authenticate",
             CommonHeader::Authorization => "Authorization",

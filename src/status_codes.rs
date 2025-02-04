@@ -73,7 +73,7 @@ pub enum HttpStatus {
 }
 
 impl HttpStatus {
-    pub fn to_bytes(&self) -> Vec<u8> {
+    pub fn as_bytes(&self) -> Vec<u8> {
         let status_line = match self {
             // 1xx: Informational
             HttpStatus::Continue => "100 Continue",
