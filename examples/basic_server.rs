@@ -11,12 +11,8 @@ struct TestServer;
 impl Server for TestServer {
     fn process_packet(_: &[u8]) -> Vec<u8> {
         let mut builder = ResponseBuilder::new(HttpStatus::Ok);
-        builder
-            .common_headers
-            .push_back((CommonHeader::Server, b"Crude Server".to_vec()));
-        builder
-            .common_headers
-            .push_back((CommonHeader::ContentType, b"text/html".to_vec()));
+        builder.add_header(CommonHeader::Server.into(), b"Crude Server".to_vec());
+        builder.add_header(CommonHeader::ContentType.into(), b"text/html".to_vec());
 
         builder.body =
             Some(b"<html>\n\t<body>\n\t\t<h1>Request received!</h1>\n\t<body>\n</html>".to_vec());

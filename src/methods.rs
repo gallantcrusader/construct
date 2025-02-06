@@ -23,7 +23,7 @@ impl HttpMethods {
             HttpMethods::TRACE => "TRACE",
             HttpMethods::PATCH => "PATCH",
         };
-        let mut bytes = response_name.as_bytes().to_vec();
+        let bytes = response_name.as_bytes().to_vec();
         bytes
     }
 }

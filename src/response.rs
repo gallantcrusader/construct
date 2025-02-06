@@ -1,11 +1,10 @@
 use std::collections::VecDeque;
 
-use super::{header::CommonHeader, status_codes::HttpStatus};
+use super::status_codes::HttpStatus;
 
 pub struct ResponseBuilder {
-    pub status: HttpStatus,
-    pub common_headers: VecDeque<(CommonHeader, Vec<u8>)>,
-    pub more_headers: VecDeque<(Vec<u8>, Vec<u8>)>,
+    status: HttpStatus,
+    headers: VecDeque<(Vec<u8>, Vec<u8>)>,
     pub body: Option<Vec<u8>>,
 }
 
@@ -13,8 +12,7 @@ impl ResponseBuilder {
     pub fn new(status: HttpStatus) -> ResponseBuilder {
         ResponseBuilder {
             status,
-            common_headers: VecDeque::new(),
-            more_headers: VecDeque::new(),
+            headers: VecDeque::new(),
             body: None,
         }
     }
@@ -24,13 +22,10 @@ impl ResponseBuilder {
         response.extend_from_slice(b"HTTP/1.1 ");
         response.extend_from_slice(&*self.status.as_bytes());
 
-        for (header, body) in self.common_headers.iter() {
-            response.extend_from_slice(&*header.as_bytes(&*body));
-        }
-
-        for (header, body) in self.more_headers.iter() {
-            response.extend_from_slice(&*header);
-            response.extend_from_slice(&*body);
+        for (header, body) in self.headers.iter() {
+            response.extend_from_slice(&header);
+            response.extend_from_slice(&body);
+            response.extend_from_slice(b"\r\n");
         }
 
         response.extend_from_slice(b"\r\n");
@@ -40,5 +35,14 @@ impl ResponseBuilder {
         }
 
         response
+    }
+
+    pub fn add_header(&mut self, header: Vec<u8>, body: Vec<u8>) {
+        // println!(
+        //     "HEADER TITLE: {}",
+        //     String::from_utf8(header.clone()).unwrap()
+        // );
+        // println!("HEADER BODY: {}", String::from_utf8(body.clone()).unwrap());
+        self.headers.push_back((header, body));
     }
 }
